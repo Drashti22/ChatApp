@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from   '@angular/forms'
 import { Router } from '@angular/router';
+import { NgToastService } from 'ng-angular-popup';
 import { AuthService } from 'src/app/Services/auth.service';
 
 @Component({
@@ -12,12 +13,15 @@ export class LoginComponent implements OnInit {
   type: string = "Password"
   isText: boolean = false;
   loginForm!: FormGroup;
-  constructor(private fb: FormBuilder, private auth: AuthService, private router : Router){}
+  constructor(private fb: FormBuilder,
+              private auth: AuthService, 
+              private router : Router,
+              private toast: NgToastService){}
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      email: ['', Validators.required, Validators.email],
-      password: ['', Validators.required, Validators.minLength(8)]
+      email: ['', Validators.required],
+      password: ['', Validators.required]
     })
   }
   onSubmit(){
@@ -27,16 +31,17 @@ export class LoginComponent implements OnInit {
       this.auth.login(this.loginForm.value)
       .subscribe({
         next:(res)=>{
-          alert(res.message);
-          this.auth.loggedInUserName = this.loginForm.get('userName')?.value;
-          this.auth.login_valid();
-          this.router.navigate(['/signup'])
+          // alert(res.message);
+          this.toast.success({detail: "SUCCESS", summary:res.message, duration: 2000});
+          this.auth.storeToken(res.token);
+          this.router.navigate(['userlist']);
         //  console.log(res.message);
          this.loginForm.reset();
          
         },
         error:(err)=>{
-          alert(err?.error.message)
+          // alert(err?.error.message);
+          this.toast.error({detail: "ERROR", summary:err?.error.message, duration: 2000})
         }
       })
     }

@@ -50,20 +50,7 @@ form input:hover{
     background-color: white;
     color: #0A004D;
 }
-.google{
-    width: 210px;
-    padding: 5px;
-    outline: none;
-    border: none;
-    background-color: white;
-    border: 2px solid #F1F1F1;
-    color: #B4B4B4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-}
+
 a{
     color: #0A004D;
     cursor: pointer;

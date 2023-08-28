@@ -5,10 +5,9 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class AuthService {loggedInUserName: string | undefined;
-  
-
 
   private baseUrl: string = "https://localhost:44377/api/"
+  private tokenkey = 'auth_token'
   constructor(private http: HttpClient) { }
 
   signUp(userObj:any){
@@ -17,19 +16,21 @@ export class AuthService {loggedInUserName: string | undefined;
   login(loginObj:any){
     return this.http.post<any>(`${this.baseUrl}login`, loginObj)
   }
-  logout(){
-    this.loggedIn =false;
+  
+  
+  isLoggedIn(): boolean{
+    const token = this.getToken();
+    console.log(token)
+    return !!token;
   }
-
-
-  //Authentication 
-  loggedIn: boolean = false;
-  login_valid(){
-    this.loggedIn = true;
+  getToken(){
+    return localStorage.getItem(this.tokenkey)
   }
-  isAuthenticated(){
-    return this.loggedIn
+  storeToken(token: string){
+    localStorage.setItem(this.tokenkey, token)
+    console.log(token)
   }
-
-
+  removeToken(): void {
+    localStorage.removeItem(this.tokenkey);
+  }
 }

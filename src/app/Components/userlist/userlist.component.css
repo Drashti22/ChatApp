@@ -1,0 +1,41 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+h2{
+    font-family: 'Bricolage Grotesque', sans-serif;
+    color: #26A700; 
+}
+nav{
+    padding: 20px;
+    background-color: #bfe4b4;
+    margin: -10px; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+nav button{
+        width: 100px;
+        padding: 10px;
+        outline: none;
+        border: none;
+        background-color: #26A700;
+        color: white;
+        cursor: pointer;
+}
+ul{
+    /* margin-top: 10px; */
+    text-align: center; 
+    width: 15%;
+    color: black;
+    list-style: none;
+    cursor: pointer;
+}
+li{
+    padding: 15px;
+    border-bottom: 1px solid #bfe4b4 ;
+}
+.userlist{
+    margin-top: 10px;
+}

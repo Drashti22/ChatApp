@@ -4,9 +4,9 @@
         <h4>Create your Account</h4>
         <form action="" [formGroup]="signupForm">
            
-            <input type="text" placeholder="User Name" formControlName="userName">
+            <input type="text" placeholder="Name" formControlName="Name">
     
-            <small *ngIf="signupForm.controls['userName'].dirty  && signupForm.hasError('required', 'userName')" style="color: red;">*Username is required</small>
+            <small *ngIf="signupForm.controls['Name'].dirty  && signupForm.hasError('required', 'Name')" style="color: red;">*Username is required</small>
             
             <input type="email" placeholder="Email address" formControlName="email">
             <small *ngIf="signupForm.controls['email'].dirty  && signupForm.hasError('required', 'email')" style="color: red;">*email is required</small>
