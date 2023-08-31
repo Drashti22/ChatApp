@@ -1,0 +1,27 @@
+ul{
+    list-style: none;
+}
+.sentClass{
+    margin-top: 5px;
+    align-self: flex-end;
+    background-color: #26A700;;
+    color: white;
+    
+}
+.receivedClass{
+    background-color:rgb(9, 68, 68);
+    align-self: flex-start;
+    color: white;
+ 
+}
+.messages{
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
+.messageBox{
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+  }                                  
+                                                                                                                                                                                                               

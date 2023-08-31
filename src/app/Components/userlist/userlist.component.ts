@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/Services/auth.service';
 import { UserService } from 'src/app/Services/user.service';
+    
 
 @Component({
   selector: 'app-userlist',
@@ -10,23 +11,22 @@ import { UserService } from 'src/app/Services/user.service';
 })
 export class UserlistComponent implements OnInit{
   public users:any = [ ];
-constructor(private auth: AuthService, private route: Router, private user: UserService ){}
+  @Output() openMessageHistory = new EventEmitter<any>();
+constructor(private auth: AuthService, private route: Router, private user: UserService,  ){}
 
 ngOnInit(){
   this.user.getUsers()
   .subscribe(res=>{
     this.users = res.users;
-    console.log(res.users.name)
   },
   (error)=>{
     console.error(error);
   }
   );
 }
-
-onLogout(){
-  this.auth.removeToken()
-  this.route.navigate(['login'])
+onUserClick(user: any) {
+  console.log('Emitting openMessageHistory event for user:', user);
+  this.openMessageHistory.emit(user);
 }
 
 

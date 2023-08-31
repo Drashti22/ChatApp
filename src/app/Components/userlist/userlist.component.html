@@ -1,9 +1,10 @@
-<nav>
-    <h2>Gossip.com</h2>
-    <button (click)="onLogout()">logout</button>
-</nav>
+<!-- userlist.component.html -->
+
 <div class="userlist">
-<ul *ngFor = "let user of users">
-    <li>{{user.name}}</li>
-</ul>
+    <ul *ngFor="let user of users">
+        <div class="user" (click)="onUserClick(user)">{{ user.name }}</div>
+    </ul>
+    
 </div>
+
+    

@@ -12,13 +12,5 @@ export class UserService {
   getUsers(){
     return this.http.get<any>(`${this.baseUrl}users`)
   }
-  getConversationHistory(userId: number, count: number, sort: string): Observable<any> {
-    const params = {
-      userId: userId.toString(),
-      count: count.toString(),
-      sort: sort
-    };
-
-    return this.http.get<any>(`${this.baseUrl}messages`, { params });
-  }
+  
 }

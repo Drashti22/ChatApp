@@ -25,17 +25,17 @@ nav button{
         cursor: pointer;
 }
 ul{
-    /* margin-top: 10px; */
     text-align: center; 
-    width: 15%;
-    color: black;
+    color: white;
     list-style: none;
     cursor: pointer;
 }
-li{
+.user{
     padding: 15px;
-    border-bottom: 1px solid #bfe4b4 ;
+    width: 20%;
 }
+
 .userlist{
     margin-top: 10px;
+    /* background-color: #26A700; */
 }

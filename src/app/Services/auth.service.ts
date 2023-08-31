@@ -33,4 +33,14 @@ export class AuthService {loggedInUserName: string | undefined;
   removeToken(): void {
     localStorage.removeItem(this.tokenkey);
   }
+  getLoggedInUserId(): number | null {
+    const userId = localStorage.getItem('user-Id');
+    return userId ? +userId : null;
+  }
+  setLoggedInUserId(id: number | null) {
+    console.log('Setting user ID in local storage:', id);
+    if (id !== null) {
+      localStorage.setItem('user-Id', id.toString());
+    }     
+  }
 }
