@@ -3,8 +3,15 @@
         <li *ngFor="let message of messages" [ngClass]="getMessageClasses(message)">
             {{ message.content }} 
         </li>
+        <form (ngSubmit)="sendMessage()" >
+            <input type="text" name="message" placeholder="send Message" class="inputmessage" [(ngModel)]="newMessage">
+            <button type="submit">Send</button>
+        </form> 
     </ul>
+   
 </div>
 <div *ngIf="messages.length === 0">
     No Conversation history found.
 </div>
+
+  

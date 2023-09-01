@@ -12,7 +12,7 @@ ul{
     background-color:rgb(9, 68, 68);
     align-self: flex-start;
     color: white;
- 
+    margin-top: 5px;
 }
 .messages{
     display: flex;
@@ -23,5 +23,12 @@ ul{
     display: flex;
     justify-content: center;
     padding: 5px;
-  }                                  
+  }     
+li{
+    display: flex;
+    gap: 5px;
+}
+i{
+    cursor: pointer;
+}
                                                                                                                                                                                                                

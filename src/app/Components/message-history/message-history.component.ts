@@ -1,4 +1,6 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/Services/auth.service';
 import { MessagesService } from 'src/app/Services/messages.service';
 
@@ -9,45 +11,64 @@ import { MessagesService } from 'src/app/Services/messages.service';
 })
 export class MessageHistoryComponent implements OnInit {
   messages: any[] = [];
-  @Input() selectedUserId!: number ;
+  newMessage: string = '';
   loggedInUserId: string | null = null;
-  constructor(private message: MessagesService, private auth: AuthService) {}
-  
-  ngOnInit() {
-    console.log('Selected User ID:', this.selectedUserId);
-    const loggedInUserId = this.auth.getLoggedInUserId();
-    this.fetchMessages();
-  }
-  ngOnChanges(changes: SimpleChanges) {
-    console.log('Changes:', changes); 
-    if (changes['selectedUserId']) {
-      this.fetchMessages();
-    }
-  }
-  fetchMessages(){
-    const loggedInUserId = this.auth.getLoggedInUserId();
-    console.log('loggedInUserId:', loggedInUserId);
+  sendForm: FormGroup | undefined; 
 
-  if (loggedInUserId !== null && this.selectedUserId !== null) {
-    this.message.getConversationHistory(loggedInUserId.toString(), this.selectedUserId).subscribe(
-      res => {
-        this.messages = res.messages;
-        console.log(res);
-      },
-      error => {
-        console.error(error);
+  
+  constructor(private message: MessagesService, private auth: AuthService, private route: ActivatedRoute, private form: FormBuilder) {}
+  
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      const userId = +params['userId'];
+      this.message.receiverId = userId;
+      this.message.getConversationHistory(userId).subscribe((res=>{
+        const ascendingMessages = res.messages.reverse();
+        this.messages =[];
+        this.messages.push(...ascendingMessages);
+        console.log(res)
+      }));
+      this.sendForm = this.form.group({
+        message: ['', Validators.required]
+      });
+    })}
+    
+    getMessageClasses(message: any): any {
+      const loggedInUserId = this.auth.getLoggedInUserId();
+      return {
+        'messageBox': true,
+        'sentClass': message.senderId === loggedInUserId,
+        'receivedClass': message.senderId !== loggedInUserId
+      };
+    }
+    sendMessage() {
+      if (this.message.receiverId && this.newMessage.trim() !== '') {
+        const loggedInUserId = this.auth.getLoggedInUserId();
+        if (loggedInUserId !== null) {
+          const userId = this.message.receiverId ? this.message.receiverId : -1;
+          this.message.sendMessage(loggedInUserId, userId, this.newMessage).subscribe(
+            (res: any) => { 
+              if (this.message.selectedUser) {
+                if (!this.message.selectedUser.messages) {
+                  this.message.selectedUser.messages = []; 
+                }
+                this.message.selectedUser.messages.push(res.newMessage);
+                
+                // Clear the input field after successfully sending a message
+                this.newMessage = ''; // Clear the input field
+              }
+            },
+            error => {
+              console.error(error);
+            }
+          );
+        } else {
+          console.error('Logged in user ID is null');
+        }
       }
-    );
-  } else {
-    console.error('Logged In UserId or selectedUserId is missing !!');
-  }
+    }
+    
+    
 }
-getMessageClasses(message: any): any {
-  const loggedInUserId = this.auth.getLoggedInUserId();
-  return {
-    'messageBox': true,
-    'sentClass': message.senderId === loggedInUserId,
-    'receivedClass': message.senderId !== loggedInUserId
-  };
-}
-}
+
+  

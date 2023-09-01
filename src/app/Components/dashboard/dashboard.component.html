@@ -4,14 +4,9 @@
 </nav>
 <div class="dashboard">
 <div class="userList">
-    <app-userlist (openMessageHistory)="openMessageHistory($event)"></app-userlist>
+    <app-userlist ></app-userlist>
 </div>
-<div class="conversation" *ngIf="selectedUser">
-    <app-message-history [selectedUserId]="selectedUser.id"></app-message-history>
-    <form (ngSubmit)="sendMessage()" *ngIf="selectedUser">
-        <input type="text" name="message" placeholder="send Message" class="inputmessage" [(ngModel)]="newMessage">
-        <button type="submit">Send</button>
-    </form>    
+<div class="conversation">
+    <router-outlet name="chatOutlet"></router-outlet>
 </div>
 </div>
-

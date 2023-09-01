@@ -9,20 +9,30 @@ export class MessagesService {
   private baseUrl: string = "https://localhost:44377/api/"
   constructor(private http: HttpClient) { }
 
-  getConversationHistory(loggedInUserId: string | null, selectedUserId: number): Observable<any> {
-    const params = new HttpParams().set('userid', loggedInUserId?.toString() || '')
+  selectedUser: any = null;
+  receiverId: number | null = null;
+
+  getConversationHistory(UserId: number): Observable<any> {
+
     return this.http.get<any>(
-      `${this.baseUrl}messages?userId=${selectedUserId}`,
-      { params: params }
+      `${this.baseUrl}messages?userId=${UserId}`,
     );
   }
   sendMessage(senderId: number, receiverId: number, content: string){
     const message = {
-      senderId: senderId,
+      // senderId: senderId,
       receiverId: receiverId,
       content: content
     };
 
     return this.http.post(`${this.baseUrl}messages`, message);
   }
+  
+  editMessage(messageId: number, content: string): Observable<any> {
+    const editedMessages = {
+      content: content
+    }
+    return this.http.put(`${this.baseUrl}messages/${messageId}`, editedMessages)
+  }
+
 }

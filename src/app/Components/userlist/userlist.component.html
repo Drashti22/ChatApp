@@ -1,9 +1,9 @@
 <!-- userlist.component.html -->
 
 <div class="userlist">
-    <ul *ngFor="let user of users">
-        <div class="user" (click)="onUserClick(user)">{{ user.name }}</div>
-    </ul>
+    <li *ngFor="let user of users" class="userName">
+        <a [routerLink]="[{ outlets: { chatOutlet: ['conversation', user.id] } }]">{{ user.name }}</a>
+    </li>
     
 </div>
 

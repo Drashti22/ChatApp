@@ -11,11 +11,14 @@ const routes: Routes = [
   {path : '', redirectTo: 'login', pathMatch: 'full'},
   {path: 'login', component: LoginComponent},
   {path: 'signup', component: SignupComponent},
-  {path: 'dashboard', component:DashboardComponent, canActivate: [AuthGuard]},
-  // {path: 'userlist', component: UserlistComponent},
-  // {path: 'conversation/:userId', component: MessageHistoryComponent}
-];
-
+  {path: 'dashboard', component:DashboardComponent, canActivate: [AuthGuard],
+    children:[{
+      path: 'conversation/:userId',
+      component: MessageHistoryComponent,
+      outlet: 'chatOutlet'
+    }]
+  }   
+  ]
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],

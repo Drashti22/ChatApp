@@ -24,11 +24,13 @@ nav button{
         color: white;
         cursor: pointer;
 }
-ul{
+a{
     text-align: center; 
     color: white;
     list-style: none;
     cursor: pointer;
+    text-decoration: none;
+
 }
 .user{
     padding: 15px;
@@ -37,5 +39,15 @@ ul{
 
 .userlist{
     margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     /* background-color: #26A700; */
+}
+.userName{
+    padding: 10px;
+}
+li{
+    list-style: none;
 }

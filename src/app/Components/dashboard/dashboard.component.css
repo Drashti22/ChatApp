@@ -34,6 +34,8 @@ nav button{
     margin-top: 10px;
     background-color: rgb(9, 68, 68);
     color: white;
+    width: 20%;  
+    height: 100vh;
 }
 .conversation{
     width: 100%;
@@ -42,9 +44,10 @@ nav button{
 form{
     position: absolute;
     bottom: 0;
-    right: 20;
+    right: 0;
     display: flex;
     gap: 20px;
+    z-index: 1;
 
 }
 .inputmessage{
@@ -54,11 +57,15 @@ form{
     margin-left: 50px;
 }
 button{
-        width: 90px;
-        padding: 10px;
-        outline: none;
-        border: none;
-        background-color: rgb(9, 68, 68);
-        color: white;
-        cursor: pointer;
+    width: 90px;
+    padding: 10px;
+    outline: none;
+    border: none;
+    background-color: rgb(9, 68, 68);
+    color: white;
+    cursor: pointer;
+}
+app-message-history{
+    z-index: 0;
+    
 }
