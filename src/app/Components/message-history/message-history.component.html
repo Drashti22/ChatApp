@@ -1,17 +1,31 @@
-<div *ngIf="messages.length > 0">
-    <ul class="messages">
-        <li *ngFor="let message of messages" [ngClass]="getMessageClasses(message)">
-            {{ message.content }} 
+<div *ngIf="messagesFound == true">
+    <ul class="messages" *ngFor="let message of messages">
+        <li  [ngClass]="getMessageClasses(message)" (contextmenu)="openContextMenu($event, message)">
+            {{ message.content }}
         </li>
-        <form (ngSubmit)="sendMessage()" >
-            <input type="text" name="message" placeholder="send Message" class="inputmessage" [(ngModel)]="newMessage">
-            <button type="submit">Send</button>
-        </form> 
+        <li *ngIf="message.isEditing == true " [ngClass]="getMessageClasses(contextMenuMessage)">
+            <form  [formGroup]="editForm">
+                <input formControlName="editedMessage">
+                <button type="submit" (click) ="onSave()" >Save</button>
+                <button (click)="onCancel()">Cancel</button>
+            </form>
+        </li>
+        <div *ngIf="contextMenuVisible" [style.left.px]="contextMenuX" [style.top.px]="contextMenuY" class="contextMenu">
+            
+                <li (click)="onEdit()" style="cursor: pointer;">Edit</li>
+                <li (click)="onDelete()" style="cursor: pointer;">Delete</li>
+        
+        </div>
+
+        
     </ul>
-   
-</div>
-<div *ngIf="messages.length === 0">
-    No Conversation history found.
+    <form (ngSubmit)="sendMessage()">
+        <input type="text" name="message" placeholder="send Message" class="inputmessage" [(ngModel)]="newMessage">
+        <button type="submit">Send</button>
+    </form>
+  
 </div>
 
-  
+<div *ngIf="messagesFound == false">
+    No Conversation history found.
+</div>

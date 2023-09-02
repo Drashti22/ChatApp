@@ -34,5 +34,8 @@ export class MessagesService {
     }
     return this.http.put(`${this.baseUrl}messages/${messageId}`, editedMessages)
   }
+  deleteMessage(messageid: number){
+    return this.http.delete<any>(`${this.baseUrl}messages/${messageid}`)
+  }
 
 }
