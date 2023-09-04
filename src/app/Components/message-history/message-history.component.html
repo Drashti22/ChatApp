@@ -1,4 +1,4 @@
-<div *ngIf="messagesFound == true">
+<div *ngIf="messagesFound == true" class="overflow">
     <ul class="messages" *ngFor="let message of messages">
         <li  [ngClass]="getMessageClasses(message)" (contextmenu)="openContextMenu($event, message)">
             {{ message.content }}
@@ -16,16 +16,18 @@
                 <li (click)="onDelete()" style="cursor: pointer;">Delete</li>
         
         </div>
+        
 
         
     </ul>
-    <form (ngSubmit)="sendMessage()">
-        <input type="text" name="message" placeholder="send Message" class="inputmessage" [(ngModel)]="newMessage">
-        <button type="submit">Send</button>
-    </form>
+    
+   
   
 </div>
-
-<div *ngIf="messagesFound == false">
-    No Conversation history found.
+<div *ngIf="messagesFound == false" class="messageNotFound">
+    <p>No Conversation history found. </p>
 </div>
+<form (ngSubmit)="sendMessage()" class="sentForm">
+    <input type="text" name="message" placeholder="send Message" class="inputmessage" [(ngModel)]="newMessage">
+    <button type="submit">Send</button>
+</form>

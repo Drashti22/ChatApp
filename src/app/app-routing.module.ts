@@ -6,6 +6,7 @@ import { DashboardComponent } from './Components/dashboard/dashboard.component';
 import { UserlistComponent } from './Components/userlist/userlist.component';
 import { AuthGuard } from './Gaurds/auth.guard';
 import { MessageHistoryComponent } from  './Components/message-history/message-history.component';
+import { LogsComponent } from './Components/logs/logs.component';
 
 const routes: Routes = [
   {path : '', redirectTo: 'login', pathMatch: 'full'},
@@ -17,7 +18,8 @@ const routes: Routes = [
       component: MessageHistoryComponent,
       outlet: 'chatOutlet'
     }]
-  }   
+  } ,
+  {path: 'logs' , component: LogsComponent}  
   ]
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

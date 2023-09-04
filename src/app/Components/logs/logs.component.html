@@ -1,0 +1,33 @@
+<div class="filter">
+    <select [(ngModel)]="selectedTimeframe" (change)="filterLogs()">
+        <option value="Last 5 mins">Last 5 Mins</option>
+        <option value="Last 10 mins">Last 10 Mins</option>
+        <option value="Last 30 mins">Last 30 Mins</option>
+        <option value="Custom">Custom</option>
+    </select>
+
+    <div *ngIf="selectedTimeframe === 'Custom'">
+        <input [(ngModel)]="customDateTime" type="datetime-local" class="form-control" (change)="onCustomDateTimeChange()">
+      </div>
+</div>
+
+
+<table *ngIf="logs.length > 0">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Ip Address</th>
+            <th>Request Body</th>
+            <th>Time Stamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let log of logs">
+            <td>{{log.id}}</td>
+            <td>{{log.ipAddress}}</td>
+            <td>{{log.requestBody}}</td>
+            <td>{{log.timeStamp}}</td>
+        </tr>
+    </tbody>
+</table>
+<p *ngIf="logs.length === 0"></p>

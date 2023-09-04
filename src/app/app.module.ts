@@ -12,6 +12,8 @@ import { TokenInterceptor } from './Interceptors/token.interceptor';
 import { MessageHistoryComponent } from './Components/message-history/message-history.component';
 import { DashboardComponent } from './Components/dashboard/dashboard.component';
 import { FormsModule } from '@angular/forms';
+import { LogsComponent } from './Components/logs/logs.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,8 @@ import { FormsModule } from '@angular/forms';
     SignupComponent,
     UserlistComponent,
     MessageHistoryComponent,
-    DashboardComponent
+    DashboardComponent,
+    LogsComponent
   ],
   imports: [
     BrowserModule,
@@ -28,7 +31,7 @@ import { FormsModule } from '@angular/forms';
     ReactiveFormsModule,
     HttpClientModule,
     NgToastModule, 
-    FormsModule
+    FormsModule, BrowserAnimationsModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,
