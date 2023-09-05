@@ -10,63 +10,81 @@ import { LogService } from 'src/app/Services/log.service';
 export class LogsComponent implements OnInit{
   public logs: any = [];
   public selectedTimeframe: string = 'Last 5 mins';
-  customDateTime: Date = new Date()
+  public customStartTime: string = '';
+  public customEndTime: string = '';
+  public showCustomTimePicker: boolean = false;
+  public showIdColumn: boolean = true;
+  public showIpAddressColumn: boolean = true;
+  public showRequestBodyColumn: boolean = true;
+  public showTimeStampColumn: boolean = true;
+
   
-  constructor(private log: LogService,  )  {}
+  constructor(private log: LogService  )  {}
   
   ngOnInit(): void {
     this.filterLogs();
 }
     
-    getLogs(){
-      const startTime = '';
-      const endTime = '';
-      this.log.getLogs(startTime, endTime).subscribe((res)=>{
-        this.logs = res;
-      })
-    }
+  getLogs() {
+  console.log('Custom Start Time:', this.customStartTime);
+  console.log('Custom End Time:', this.customEndTime);
+  if (this.customStartTime && this.customEndTime) {
+    this.log.getLogs(this.customStartTime, this.customEndTime).subscribe((res) => {
+      this.logs = res;
+      console.log('Custom Start Time:', this.customStartTime);
+      console.log('Custom End Time:', this.customEndTime);
+      console.log('API Response:', res);
+    });
+}
+}
     onTimeframeChange() {
       if (this.selectedTimeframe !== 'Custom') {
+        this.showCustomTimePicker = false;
         this.filterLogs();
+      }else{
+        this.showCustomTimePicker = true;
       }
     }
     onCustomDateTimeChange() {
-      if (this.selectedTimeframe === 'Custom') {
         this.filterLogs();
-      }
     }
       filterLogs(){
         if(this.selectedTimeframe !== 'Custom'){
         const now = new Date();
         let startTime: Date;
-        switch(this.selectedTimeframe){
-          case 'Last 5 Min':
+        switch (this.selectedTimeframe) {
+          case 'Last 5 mins':
             startTime = new Date(now.getTime() - 5 * 60 * 1000);
             break;
-          case 'Last 10 Min':
+          case 'Last 10 mins':
             startTime = new Date(now.getTime() - 10 * 60 * 1000);
             break;
-          case 'last 30 Min':
+          case 'Last 30 mins':
             startTime = new Date(now.getTime() - 30 * 60 * 1000);
             break;
           default:
             startTime = new Date();
         }
+        
+        
         const endTime = new Date();
 
         this.log.getLogs(startTime.toISOString(), endTime.toISOString()).subscribe((res)=>{
           this.logs = res;
         });
-      }else if(this.customDateTime){
-        const customStartTime = this.customDateTime;
-        const customEndTime = new Date();
-        this.log.getLogs(customStartTime.toISOString(), customEndTime.toISOString()).subscribe((res)=>{
-          this.logs = res;
-        });
-      }else{
-        this.logs = [];
+
+        }
+        else if(this.showCustomTimePicker){
+          this.getLogs();
+        }
+        else{
+          this.logs = [];
+        }
       }
-      }
-}
+      onColumnToggle() {
+       
+    }
+    }
+
 
 

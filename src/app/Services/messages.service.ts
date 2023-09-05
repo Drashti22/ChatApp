@@ -12,11 +12,12 @@ export class MessagesService {
   selectedUser: any = null;
   receiverId: number | null = null;
 
-  getConversationHistory(UserId: number): Observable<any> {
-
-    return this.http.get<any>(
-      `${this.baseUrl}messages?userId=${UserId}`,
-    );
+  getConversationHistory(UserId: number, beforeTimestamp?: string | null): Observable<any> {
+    let url = `${this.baseUrl}messages?userId=${UserId}`
+    if (beforeTimestamp) {
+      url += `&before=${beforeTimestamp}`;
+    }
+    return this.http.get<any>(url);
   }
   sendMessage(senderId: number, receiverId: number, content: string){
     const message = {

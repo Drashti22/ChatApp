@@ -1,4 +1,4 @@
-<div *ngIf="messagesFound == true" class="overflow">
+<div *ngIf="messagesFound == true" class="ConversationHistory"  >
     <ul class="messages" *ngFor="let message of messages">
         <li  [ngClass]="getMessageClasses(message)" (contextmenu)="openContextMenu($event, message)">
             {{ message.content }}

@@ -12,6 +12,7 @@ interface Message {
   timestamp: string,
   isEditing: boolean;
 
+
 }
 @Component({
   selector: 'app-message-history',
@@ -34,21 +35,36 @@ export class MessageHistoryComponent implements OnInit {
   loggedInUserId = this.auth.getLoggedInUserId();
   messagesFound: boolean = false;
 
-
+  
   constructor(private message: MessagesService,
     private auth: AuthService,
     private route: ActivatedRoute,
     private form: FormBuilder) { }
 
+    //get messages
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const userId = +params['userId'];
       this.message.receiverId = userId;
-      this.message.getConversationHistory(userId).subscribe((res => {
+      this.getMessages();
+      
+    })
+    this.sendForm = this.form.group({
+      message: ['', Validators.required]
+    });
+    this.editForm = this.form.group({
+      editedMessage: ['', Validators.required]
+    })
+  }
+  getMessages(){
+    this.route.params.subscribe(params => {
+      const userId = +params['userId'];
+      this.message.receiverId = userId;
+    this.message.getConversationHistory(userId).subscribe((res => {
         if (res.messages) {
           const ascendingMessages = res.messages.reverse();
           this.messages = ascendingMessages;
-          // this.messages.push(...ascendingMessages);
+           this.messages.push(...ascendingMessages);
           this.messagesFound = true;
         }
         else {
@@ -57,15 +73,8 @@ export class MessageHistoryComponent implements OnInit {
         }
         console.log(res)
       }));
-      this.sendForm = this.form.group({
-        message: ['', Validators.required]
-      });
-      this.editForm = this.form.group({
-        editedMessage: ['', Validators.required]
-      })
-    })
+    });
   }
-
   getMessageClasses(message: any): any {
     const loggedInUserId = this.auth.getLoggedInUserId();
     return {
@@ -74,6 +83,8 @@ export class MessageHistoryComponent implements OnInit {
       'receivedClass': message.senderId !== loggedInUserId
     };
   }
+
+  //sending messages
   sendMessage() {
     if (this.message.receiverId && this.newMessage.trim() !== '') {
       const loggedInUserId = this.auth.getLoggedInUserId();
@@ -110,6 +121,8 @@ export class MessageHistoryComponent implements OnInit {
       }
     }
   }
+
+  //open context menu
   openContextMenu(event: MouseEvent, selectedMessage: any) {
     event.preventDefault();
     console.log(selectedMessage.senderId)
@@ -121,6 +134,8 @@ export class MessageHistoryComponent implements OnInit {
       this.contextMenuMessage = selectedMessage;
     }
   }
+
+  //close context menu
   closeContextMenu() {
     this.contextMenuVisible = false;
   }
@@ -130,6 +145,8 @@ export class MessageHistoryComponent implements OnInit {
     if (!this.contextMenuVisible) return;
     this.closeContextMenu();
   }
+
+  //editting messages
   onEdit() {
 
     if (this.contextMenuMessage !== null) {
@@ -138,6 +155,8 @@ export class MessageHistoryComponent implements OnInit {
     }
     this.closeContextMenu
   }
+
+  //edit
   onSave() {
     if (this.contextMenuMessage !== null && this.contextMenuMessage.id !== null) {
       const userId = this.message.receiverId;
@@ -170,6 +189,8 @@ export class MessageHistoryComponent implements OnInit {
     }
     this.closeContextMenu();
   }
+
+  //deleting messages
   onDelete() {
     if (this.contextMenuMessage !== null) {
       const userId = this.message.receiverId;
@@ -179,7 +200,7 @@ export class MessageHistoryComponent implements OnInit {
             if(res.messages != null){
               const ascendingMessages = res.messages.reverse();
               this.messages = ascendingMessages;
-              // this.messages.push(...ascendingMessages);
+              this.messages.push(...ascendingMessages);
               console.log(res)
               this.messagesFound = this.messages.length > 0;
             }else{
@@ -191,6 +212,8 @@ export class MessageHistoryComponent implements OnInit {
       }
     }
   }
+
+ 
 }
 
 

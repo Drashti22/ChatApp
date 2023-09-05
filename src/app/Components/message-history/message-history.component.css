@@ -69,7 +69,7 @@ i{
     width: 970px;
     padding: 10px;
   }
-  form button{
+  .sentForm button{
     background-color: teal;
     color: white;
     outline: none;
