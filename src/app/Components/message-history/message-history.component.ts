@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit, SimpleChanges, ViewChild, Renderer2 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/Services/auth.service';
@@ -36,18 +36,26 @@ export class MessageHistoryComponent implements OnInit {
   messagesFound: boolean = false;
 
   
+
+
+  private beforeTimestamp: string | null = null;
+  private isLoading = false;
+  private isEndOfMessages = false;
+
+
   constructor(private message: MessagesService,
     private auth: AuthService,
     private route: ActivatedRoute,
     private form: FormBuilder) { }
 
-    //get messages
+  //get messages
   ngOnInit(): void {
+    
     this.route.params.subscribe(params => {
       const userId = +params['userId'];
       this.message.receiverId = userId;
       this.getMessages();
-      
+
     })
     this.sendForm = this.form.group({
       message: ['', Validators.required]
@@ -56,24 +64,34 @@ export class MessageHistoryComponent implements OnInit {
       editedMessage: ['', Validators.required]
     })
   }
-  getMessages(){
-    this.route.params.subscribe(params => {
-      const userId = +params['userId'];
-      this.message.receiverId = userId;
-    this.message.getConversationHistory(userId).subscribe((res => {
-        if (res.messages) {
-          const ascendingMessages = res.messages.reverse();
-          this.messages = ascendingMessages;
-           this.messages.push(...ascendingMessages);
-          this.messagesFound = true;
-        }
-        else {
-          this.messages = [];
-          this.messagesFound = false;
-        }
-        console.log(res)
-      }));
-    });
+
+  
+  getMessages() {
+    
+      if(this.message.receiverId != null){
+        this.message.getConversationHistory(this.message.receiverId).subscribe((res => {
+          if (res.messages) {
+            console.log(res,1)
+            const ascendingMessages = res.messages;
+            this.messages = ascendingMessages;
+          //  this.messages.push(...ascendingMessages);
+            this.messagesFound = true;
+            // this.scrollToBottom();
+            setTimeout(() => {
+              this.scrollToBottom();
+            });
+            
+            
+          }
+          else {
+            this.messages = [];
+            this.messagesFound = false;
+          }
+          console.log(res)
+        }));
+      }
+      
+    
   }
   getMessageClasses(message: any): any {
     const loggedInUserId = this.auth.getLoggedInUserId();
@@ -101,16 +119,23 @@ export class MessageHistoryComponent implements OnInit {
               }
               this.message.selectedUser.messages.push(res.newMessage);
               this.messagesFound = true;
+              // this.scrollToBottom();
               console.log(this.messagesFound)
 
             }
             this.message.getConversationHistory(userId).subscribe((res => {
-              const ascendingMessages = res.messages.reverse();
+              const ascendingMessages = res.messages;
               this.messages = ascendingMessages;
               // this.messages.push(...ascendingMessages);
               console.log(res)
               this.newMessage = '';
+              // this.scrollToBottom();
+              setTimeout(() => {
+                this.scrollToBottom();
+              });
+              
             }));
+           
           },
           error => {
             console.error(error);
@@ -162,21 +187,24 @@ export class MessageHistoryComponent implements OnInit {
       const userId = this.message.receiverId;
       if (userId !== null) {
         this.message.editMessage(this.contextMenuMessage.id, this.editForm.value.editedMessage)
-        .subscribe(res => {
-          console.log(res)
-          // this.contextMenuMessage!.content = this.editForm.value.editedMessage;
-          // this.contextMenuMessage!.isEditing= false;
-
-
-          this.message.getConversationHistory(userId).subscribe((res => {
-            const ascendingMessages = res.messages.reverse();
-            this.messages = [];
-            this.messages.push(...ascendingMessages);
+          .subscribe(res => {
             console.log(res)
-            this.editForm.reset('');
-           
-          }));
-        })
+            // this.contextMenuMessage!.content = this.editForm.value.editedMessage;
+            // this.contextMenuMessage!.isEditing= false;
+
+
+            this.message.getConversationHistory(userId).subscribe((res => {
+              const ascendingMessages = res.messages;
+              this.messages = ascendingMessages;
+              // this.messages.push(...ascendingMessages);
+              console.log(res)
+              this.editForm.reset('');
+              setTimeout(() => {
+                this.scrollToBottom();
+              });
+              
+            }));
+          })
       }
       else {
         console.error("error")
@@ -197,15 +225,18 @@ export class MessageHistoryComponent implements OnInit {
       if (userId !== null) {
         this.message.deleteMessage(this.contextMenuMessage.id).subscribe(res => {
           this.message.getConversationHistory(userId).subscribe((res => {
-            if(res.messages != null){
-              const ascendingMessages = res.messages.reverse();
+            if (res.messages != null) {
+              const ascendingMessages = res.messages;
               this.messages = ascendingMessages;
-              this.messages.push(...ascendingMessages);
+              // this.messages.push(...ascendingMessages);
               console.log(res)
               this.messagesFound = this.messages.length > 0;
-            }else{
+            } else {
               this.messagesFound = false
             }
+            setTimeout(() => {
+              this.scrollToBottom();
+            });
             
           }));
         })
@@ -213,7 +244,108 @@ export class MessageHistoryComponent implements OnInit {
     }
   }
 
- 
+  // scrollToBottom() {
+  //   try {
+  //     console.log("scroll to bottom")
+  //     this.ConversationHistory.nativeElement.scrollTop = this.ConversationHistory.nativeElement.scrollHeight;
+  //   } catch (err) { }
+  // }
+  scrollToBottom() {
+    const messageContainer = document.querySelector('.ConversationHistory');
+    if (messageContainer) {
+      messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
+  }
+
+  // loadMoreMessages() {
+  //   console.log('Loading more messages...');
+  //   if (this.messages && this.messages.length > 0) {
+  //     const firstMessage = this.messages[0];
+  //     const firstMessageId = firstMessage.id;
+  
+  //     if (firstMessage.timestamp !== null && (this.earliestTimestamp === null || firstMessage.timestamp < this.earliestTimestamp)) {
+  //       if (this.message.receiverId != null) {
+  //         this.message.getAdditionalMessages(this.message.receiverId, this.earliestTimestamp ?? '', this.messagesToLoad)
+  //           .subscribe(
+  //             (res) => {
+  //               if (res.messages) {
+  //                 console.log(res, 2);
+  //                 if (Array.isArray(res.messages) && res.messages.length > 0){
+  //                 const newMessages = res.messages;
+  //                 this.messages = [...newMessages, ...this.messages];
+  //                 this.earliestTimestamp = newMessages[newMessages.length - 1].timestamp;
+  //               }
+  //             }
+  //             },
+  //             (error) => {
+  //               console.error('Error loading additional messages:', error);
+  //             }
+  //           );
+  //       }
+  //     }
+  //   }
+  // }
+  loadMessages() {
+
+    // alert("1 alert")
+    if (!this.isLoading || !this.isEndOfMessages && this.message.receiverId != null ) {
+      console.log("loading more messages")
+      this.isLoading = true;
+      const receiverId = this.message.receiverId;
+    // alert("2 alert")
+    if (this.messages.length > 0) {
+      this.beforeTimestamp = this.messages[this.messages.length - 1].timestamp;
+    }
+      
+      const scrollContainer = document.querySelector('.ConversationHistory');
+      const scrollOffset = scrollContainer ? scrollContainer.scrollHeight - scrollContainer.scrollTop : 0;
+
+
+      this.message.getConversationHistory(receiverId, this.beforeTimestamp).subscribe((res: any) => {
+        if(Array.isArray(res.messages)){
+        const olderMessages = res.messages.map((msg: Message) => ({
+          ...msg,
+          isEditing: false,
+        })).reverse();
+
+        if (olderMessages.length > 0) {
+          
+          this.messages = [ ...this.messages, ...olderMessages];
+          console.log(this.messages)
+          this.beforeTimestamp = olderMessages[olderMessages.length - 1].timestamp;
+          console.log(this.beforeTimestamp)
+        } 
+        if (scrollContainer) {
+          setTimeout(() => {
+            scrollContainer.scrollTop = scrollContainer.scrollHeight - scrollOffset;
+          });
+        }
+        else {
+          
+          this.isEndOfMessages = true;
+        }
+      }else{
+        console.error("response is not an array:", res)
+      }
+
+        this.isLoading = false;
+      });
+  
+    }
+  }
+
+  
+  
+  
+  
+  @HostListener('scroll', ['$event'])
+  onScroll(event: Event){
+    console.log('Scroll event detected');
+    const element = event.target as HTMLElement;
+    if(element.scrollTop === 0){
+      this.loadMessages()
+    }
+  }
 }
 
 

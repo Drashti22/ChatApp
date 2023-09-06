@@ -80,7 +80,7 @@ button{
 
 .conversation{
     height: calc(95vh - 100px);
-    overflow-y: scroll;  
+    /* overflow-y: scroll;   */
     /* z-index: 2;  */
     width: 100%;
     margin-top: 80px;

@@ -10,15 +10,18 @@ export class MessagesService {
   constructor(private http: HttpClient) { }
 
   selectedUser: any = null;
-  receiverId: number | null = null;
+  receiverId!: number ;
 
-  getConversationHistory(UserId: number, beforeTimestamp?: string | null): Observable<any> {
-    let url = `${this.baseUrl}messages?userId=${UserId}`
+  getConversationHistory(userId: number, beforeTimestamp?: string | null): Observable<any> {
+    let url = `${this.baseUrl}messages?userId=${userId}`;
     if (beforeTimestamp) {
       url += `&before=${beforeTimestamp}`;
     }
+    console.log(userId, beforeTimestamp)
     return this.http.get<any>(url);
   }
+  
+  
   sendMessage(senderId: number, receiverId: number, content: string){
     const message = {
       // senderId: senderId,
@@ -37,6 +40,12 @@ export class MessagesService {
   }
   deleteMessage(messageid: number){
     return this.http.delete<any>(`${this.baseUrl}messages/${messageid}`)
+  }
+  getAdditionalMessages(receiverId: number, beforeTimestamp: string, limit: number): Observable<any> {
+    console.log(receiverId, beforeTimestamp, limit)
+    let url = `${this.baseUrl}messages?userId=${receiverId}&before=${beforeTimestamp}&limit=${limit}`;
+    
+    return this.http.get<any>(url);
   }
 
 }

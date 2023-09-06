@@ -81,9 +81,7 @@ export class LogsComponent implements OnInit{
           this.logs = [];
         }
       }
-      onColumnToggle() {
-       
-    }
+      
     }
 
 
